@@ -1,5 +1,11 @@
 require 'rails_helper'
 
+# good stuff to know
+#
+# 2.6.3 :020 > Country.where("lifeexpectancy > ?", lifeEx).where(continent: 'Europe').pluck(:name)
+#    (0.6ms)  SELECT "country"."name" FROM "country" WHERE (lifeexpectancy > 78) AND "country"."continent" = $1  [["continent", "Europe"]]
+#  => ["Netherlands", "Andorra", "Spain", "Faroe Islands", "Gibraltar", "Iceland", "Italy", "Greece", "Liechtenstein", "Monaco", "Norway", "France", "Sweden", "San Marino", "Switzerland"]
+
 RSpec.describe "Practice with ActiveRecord", type: :model do
   describe "Where" do
     it "can find records and attributes (class)" do
@@ -10,16 +16,35 @@ RSpec.describe "Practice with ActiveRecord", type: :model do
 
     it "can find records and attributes" do
       #What is the area of the US?
+      us = Country
+        .where(code:'USA')
+        .first
+        # so you can do to sql to the us variable when it's only sql statements
+        # thus why having the .first will not work
+        # byebug
+        # Country.where(code: 'USA') in byebug will give us this data from the table
+
       expect(us.surfacearea).to eq(9363520.0)
     end
 
     it "can find records and attributes" do
+
       #What is the population of Canada?
+      # we can go to the rails console
+      # by running rails c
+      # then we can run ruby queries on the database as shown below
+      canada = Country
+      .where(code:'CAN')
+      .first
+
       expect(canada.population).to eq(31147000)
     end
 
     it "can find records and attributes" do
       #What is the area of Canada?
+      canada = Country
+      .where(code:'CAN')
+      .first
       expect(canada.surfacearea).to eq(9970610.0)
     end
 
@@ -35,11 +60,20 @@ RSpec.describe "Practice with ActiveRecord", type: :model do
 
     it "can find records via equality comparrison" do
       #List the countries in Europe that have a life expectancy of more than 78?
+      lifeExpectancy = 78
+      countries = Country
+      .where("lifeexpectancy > ?", lifeExpectancy)
+      .where(continent: 'Europe')
+
       expect(countries.count).to eq(15)
     end
 
     it "can find records via equality comparrison" do
       #List the countries in Europe that have a life expectancy of less than 77?
+      lifeExpectancy = 77
+      countries = Country
+      .where("lifeexpectancy < ?", lifeExpectancy)
+      .where(continent: 'Europe')
       expect(countries.count).to eq(22)
     end
 
@@ -49,7 +83,7 @@ RSpec.describe "Practice with ActiveRecord", type: :model do
     end
 
     it "can find records via equality comparrison" do
-      #List the countries that have a population smaller than 30,000,000 and a life expectancy of more than 45?
+      #List the countries that have a population greater than 30,000,000 and a life expectancy of more than 45?
       expect(countries.count).to eq(35)
     end
 
