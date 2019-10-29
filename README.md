@@ -6,5 +6,5 @@
 Setup:
 - git clone
 - cd into folder
-- run `bundle'
+- run `bundle`
 - run rspec spec/models/intro_to_sql_specs.rb
